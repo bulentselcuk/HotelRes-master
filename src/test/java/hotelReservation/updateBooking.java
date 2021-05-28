@@ -1,6 +1,7 @@
 package hotelReservation;
 
 import io.restassured.http.ContentType;
+import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
@@ -22,16 +23,26 @@ public class updateBooking {
                 "    },\n" +
                 "    \"additionalneeds\" : \"Breakfast\"\n" +
                 "}";
+        JSONObject request = new JSONObject();
+        request.put("username", "admin");
+        request.put("password", "password123");
 
-      String token ="2778662706a3797" ;
-        given().contentType(ContentType.JSON).
-                accept(ContentType.JSON).
-                header("Cookie","token="+token).
-                body(jsonObject).
-                put("https://restful-booker.herokuapp.com/booking/35").prettyPeek().
-                then().statusCode(200);
+        System.out.println(request.toString());
 
+        String token = given().contentType(ContentType.JSON).
+                body(request.toString()).
+                when().
+                post("https://restful-booker.herokuapp.com/auth").prettyPeek().jsonPath().getString("token");
 
+        System.out.println(token);
+        given().
+                pathParam("id",1)
+                .header("Content-Type","application/json" )
+                .header("Accept","application/json" )
+                .cookie("token", token)
+                .body(jsonObject)
+                .when().log().all().
+                put("https://restful-booker.herokuapp.com/booking/{id}").prettyPeek();
 
 
     }

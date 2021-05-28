@@ -8,7 +8,7 @@ public class GetBookingID {
 
     @Test
     public void test(){
-        given().get("https://restful-booker.herokuapp.com/booking/16").prettyPeek().
+        given().post("https://restful-booker.herokuapp.com/booking/16").prettyPeek().
                 then().
                 statusCode(200);
     }
